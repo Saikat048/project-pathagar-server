@@ -10,14 +10,36 @@ app.use(cors());
 app.use(express.json());
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.skcpj7w.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.skcpj7w.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  console.log('database connected');
-  // perform actions on the collection object
-  client.close();
-});
+
+async function run() {
+  try {
+      await client.connect();
+      const courseCollection = client.db("pathagar_db").collection("courses");
+      const bookCollection = client.db("pathagar_db").collection("books");
+
+      app.get('/course', async (req, res) => {
+        const courses = await courseCollection.find().toArray();
+        res.send(courses)
+        
+    })
+
+      app.get('/book', async (req, res) => {
+        const books = await bookCollection.find().toArray();
+        res.send(books)
+        
+    })
+  }
+
+  finally {
+      // await client.close();
+  }
+  
+}
+
+run().catch(console.dir);
+
 
 
 app.get('/', (req, res) => {
