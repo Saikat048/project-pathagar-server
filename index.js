@@ -60,11 +60,25 @@ async function run() {
 
     })
 
+    app.get('/course/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const courses = await courseCollection.findOne(query);
+      res.send(courses)
+    })
+
     // book route
     app.get('/book', async (req, res) => {
       const books = await bookCollection.find().toArray();
       res.send(books)
 
+    })
+
+    app.get('/book/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const books = await bookCollection.findOne(query);
+      res.send(books)
     })
 
     // order route
