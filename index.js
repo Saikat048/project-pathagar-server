@@ -35,6 +35,18 @@ async function run() {
       const bookCollection = client.db("pathagar_db").collection("books");
       const userCollection = client.db("pathagar_db").collection("users");
 
+      // admin varification
+      const verifyAdmin = async (req, res, next) => {
+        const requester = req.decoded.email;
+        const requesterAccount = await userCollection.findOne({ email: requester });
+        if (requesterAccount.role === 'admin') {
+            next();
+        }
+        else {
+            res.status(403).send({ message: 'Forbidden Access' })
+        }
+    }
+
       // course route
       app.get('/course', async (req, res) => {
         const courses = await courseCollection.find().toArray();
@@ -55,6 +67,16 @@ async function run() {
       res.send(users)
       
   })
+
+  app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
+    const email = req.params.email;
+    const filter = { email: email };
+    const updateDoc = {
+        $set: { role: 'admin' },
+    };
+    const users = await userCollection.updateOne(filter, updateDoc);
+    res.send(users)
+})
 
   app.put('/user/:email', async (req, res) => {
     const email = req.params.email;
