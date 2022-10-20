@@ -33,7 +33,7 @@ async function run() {
   try {
     await client.connect();
 
-    // collections
+    // database collections
     const courseCollection = client.db("pathagar_db").collection("courses");
     const bookCollection = client.db("pathagar_db").collection("books");
     const orderCollection = client.db("pathagar_db").collection("orders");
@@ -56,7 +56,6 @@ async function run() {
     app.get('/course', async (req, res) => {
       const courses = await courseCollection.find().toArray();
       res.send(courses)
-
     })
 
     app.get('/course/:id', async (req, res) => {
@@ -152,7 +151,6 @@ async function run() {
     app.get('/user', async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users)
-
     })
 
     app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
@@ -214,10 +212,6 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Hello from pathagar server')
 });
-
-app.get('*', (req, res) => {
-  res.send('No Route Found')
-})
 
 app.listen(port, () => {
   console.log('Successfully listening from', port)
