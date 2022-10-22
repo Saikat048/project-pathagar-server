@@ -27,7 +27,6 @@ const verifyJWT = (req, res, next) => {
   });
 }
 
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.skcpj7w.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -35,7 +34,7 @@ async function run() {
   try {
     await client.connect();
 
-    // collections
+    // database collections
     const courseCollection = client.db("pathagar_db").collection("courses");
     //const bookCollection = client.db("pathagar_db").collection("books");
     const orderCollection = client.db("pathagar_db").collection("orders");
@@ -66,7 +65,6 @@ async function run() {
     app.get('/course', async (req, res) => {
       const courses = await courseCollection.find().toArray();
       res.send(courses)
-
     })
 
     app.get('/course/:id', async (req, res) => {
@@ -109,10 +107,10 @@ async function run() {
       if (email === decodedEmail) {
         const query = { email: email };
         const orders = await orderCollection.find(query).toArray();
-        res.send(orders)
+        return res.send(orders)
       }
       else {
-        res.status(403).send({ message: 'Forbidden Access' })
+        return res.status(403).send({ message: 'Forbidden Access' })
       }
     })
 
