@@ -14,6 +14,29 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Socket.oi connection
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000/",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+
+  socket.broadcast.emit('message', 'A user has joined the chat')
+
+  socket.emit("message", 'Welcome to ChatCord')
+  socket.on("joinRoom", room => {
+    socket.join(room)
+  })
+
+  socket.on("newMessage", ({ newMessage, room }) => {
+    io.in(room).emit("getLatestMessage", newMessage)
+  })
+});
 
 // jwt verification
 const verifyJWT = (req, res, next) => {
