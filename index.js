@@ -5,7 +5,6 @@ require('dotenv').config();
 var jwt = require('jsonwebtoken');
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const { Socket } = require('dgram');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const port = process.env.PORT || 5000;
 const app = express();
@@ -70,8 +69,8 @@ async function run() {
 
     //=====================############=========================
     const bookCollection = client.db('pathagar_db').collection('books');
-    const cartCollection = client.db('pathagar_db').collection('cart');
-    const userCollection = client.db("pathagar_db").collection("users");
+    // const cartCollection = client.db('pathagar_db').collection('cart');
+    // const userCollection = client.db("pathagar_db").collection("users");
     //=====================############=========================
 
     // admin varification
@@ -253,134 +252,135 @@ async function run() {
       res.send(books);
     })
 
-    app.post('/cart', async (req, res) => {
-      const query = req.body;
-      const result = await cartCollection.insertOne(query);
-      res.send(result);
-    });
+    // app.post('/cart', async (req, res) => {
+    //   const query = req.body;
+    //   const result = await cartCollection.insertOne(query);
+    //   res.send(result);
+    // });
 
-    app.get('/carts', async (req, res) => {
-      const query = req.query;
-      const cursor = cartCollection.find(query);
-      const items = await cursor.toArray();
-      res.send(items);
-    });
+    // app.get('/carts', async (req, res) => {
+    //   const query = req.query;
+    //   const cursor = cartCollection.find(query);
+    //   const items = await cursor.toArray();
+    //   res.send(items);
+    // });
 
-    app.get('/carts/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const item = await cartCollection.findOne(query);
-      res.send(item);
-    });
+    // app.get('/carts/:id', async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const item = await cartCollection.findOne(query);
+    //   res.send(item);
+    // });
 
-    app.put('/carts/quantity/:id', async (req, res) => {
-      const id = req.params.id;
-      const updateQuantity = req.body;
-      //console.log(updateQuantity)
-      const filter = { _id: ObjectId(id) };
-      const options = { upsert: true };
-      const updateDoc = {
-        $set: {
-          quantity: updateQuantity.quantity
-        }
+    // app.put('/carts/quantity/:id', async (req, res) => {
+    //   const id = req.params.id;
+    //   const updateQuantity = req.body;
+    //   //console.log(updateQuantity)
+    //   const filter = { _id: ObjectId(id) };
+    //   const options = { upsert: true };
+    //   const updateDoc = {
+    //     $set: {
+    //       quantity: updateQuantity.quantity
+    //     }
 
-      };
-      const result = await cartCollection.updateOne(filter, updateDoc, options);
-      res.send(result);
+    //   };
+    //   const result = await cartCollection.updateOne(filter, updateDoc, options);
+    //   res.send(result);
 
-    });
+    // });
 
 
-    app.delete("/carts/delete/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: ObjectId(id) };
-      const result = await cartCollection.deleteOne(filter);
-      res.send(result);
-    });
+    // app.delete("/carts/delete/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: ObjectId(id) };
+    //   const result = await cartCollection.deleteOne(filter);
+    //   res.send(result);
+    // });
 
-    app.put('/user/:email', async (req, res) => {
-      const email = req.params.email;
-      const user = req.body;
-      const filter = { email };
-      const option = { upsert: true };
-      const updateDoc = {
-        $set: user
-      };
-      const result = await userCollection.updateOne(filter, updateDoc, option);
-      const token = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
-      res.send({ result, token });
-    });
-    app.get('/admin/:email', async (req, res) => {
-      const email = req.params.email;
-      const user = await userCollection.findOne({ email: email });
-      const isAdmin = user?.role === 'admin';
-      res.send({ admin: isAdmin });
-      // res.send(user);
-    });
+    // app.put('/user/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const user = req.body;
+    //   const filter = { email };
+    //   const option = { upsert: true };
+    //   const updateDoc = {
+    //     $set: user
+    //   };
+    //   const result = await userCollection.updateOne(filter, updateDoc, option);
+    //   const token = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+    //   res.send({ result, token });
+    // });
 
-    app.put('/userupdate/:email', async (req, res) => {
-      const email = req.params.email;
-      const user = req.body;
-      const filter = { email };
-      const option = { upsert: true };
-      const updateDoc = {
-        $set: user
-      };
-      const result = await userCollection.updateOne(filter, updateDoc, option);
-      res.send(result);
-    })
+    // app.get('/admin/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const user = await userCollection.findOne({ email: email });
+    //   const isAdmin = user?.role === 'admin';
+    //   res.send({ admin: isAdmin });
+    //   // res.send(user);
+    // });
 
-    app.get('/userprofile/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email };
-      const result = await userCollection.findOne(query);
-      res.send(result);
-    });
+    // app.put('/userupdate/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const user = req.body;
+    //   const filter = { email };
+    //   const option = { upsert: true };
+    //   const updateDoc = {
+    //     $set: user
+    //   };
+    //   const result = await userCollection.updateOne(filter, updateDoc, option);
+    //   res.send(result);
+    // })
 
-    app.get('/allusers', async (req, res) => {
-      const query = {};
-      const result = await userCollection.find(query).toArray();
-      res.send(result);
-    });
+    // app.get('/userprofile/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email };
+    //   const result = await userCollection.findOne(query);
+    //   res.send(result);
+    // });
 
-    app.delete('/allusers/dlt/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email };
-      const result = userCollection.deleteOne(query);
-      res.send(result);
-    });
+    // app.get('/allusers', async (req, res) => {
+    //   const query = {};
+    //   const result = await userCollection.find(query).toArray();
+    //   res.send(result);
+    // });
 
-    app.put('/allusers/makeadmin/:email', verifyJWT, async (req, res) => {
-      const email = req.params.email;
-      const requester = req.decoded.email;
-      const requesterAccount = await userCollection.findOne({ email: requester });
-      if (requesterAccount.role === 'admin') {
-        const filter = { email: email };
-        const updateDoc = {
-          $set: { role: 'admin' },
-        };
-        const result = await userCollection.updateOne(filter, updateDoc);
-        res.send(result);
-      }
+    // app.delete('/allusers/dlt/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email };
+    //   const result = userCollection.deleteOne(query);
+    //   res.send(result);
+    // });
 
-      else {
-        res.status(403).send({ message: 'forbidden' });
-      }
+    // app.put('/allusers/makeadmin/:email', verifyJWT, async (req, res) => {
+    //   const email = req.params.email;
+    //   const requester = req.decoded.email;
+    //   const requesterAccount = await userCollection.findOne({ email: requester });
+    //   if (requesterAccount.role === 'admin') {
+    //     const filter = { email: email };
+    //     const updateDoc = {
+    //       $set: { role: 'admin' },
+    //     };
+    //     const result = await userCollection.updateOne(filter, updateDoc);
+    //     res.send(result);
+    //   }
 
-    });
+    //   else {
+    //     res.status(403).send({ message: 'forbidden' });
+    //   }
 
-    app.get('/booking/email/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email };
-      const result = await cartCollection.find(query).toArray();
-      res.send(result);
-    });
-    app.delete('/booking/dlt/:id', verifyJWT, async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await cartCollection.deleteOne(query);
-      res.send(result);
-    });
+    // });
+
+    // app.get('/booking/email/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email };
+    //   const result = await cartCollection.find(query).toArray();
+    //   res.send(result);
+    // });
+    // app.delete('/booking/dlt/:id', verifyJWT, async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const result = await cartCollection.deleteOne(query);
+    //   res.send(result);
+    // });
 
     //=====================#####==============================================
 
