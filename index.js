@@ -281,10 +281,10 @@ run().catch(console.dir);
 
 
 
-// app.get('/', (req, res) => {
-//   res.send('Hello from pathagar server')
-// });
+app.get('/', (req, res) => {
+  res.send('Hello from pathagar server')
+});
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log('Successfully listening from', port)
 });
