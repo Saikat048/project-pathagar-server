@@ -250,11 +250,9 @@ async function run() {
     // =================#######===============
 
     app.get('/books', async (req, res) => {
-      const query = req.query;
-      const cursor = bookCollection.find(query);
-      const items = await cursor.toArray();
-      res.send(items);
-    });
+      const books = await bookCollection.find().toArray();
+      res.send(books);
+    })
 
     app.post('/cart', async (req, res) => {
       const query = req.body;
