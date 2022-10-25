@@ -285,6 +285,6 @@ app.get('/', (req, res) => {
   res.send('Hello from pathagar server')
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log('Successfully listening from', port)
 });
