@@ -63,7 +63,6 @@ async function run() {
 
     // database collections
     const courseCollection = client.db("pathagar_db").collection("courses");
-    //const bookCollection = client.db("pathagar_db").collection("books");
     const orderCollection = client.db("pathagar_db").collection("orders");
     const reviewCollection = client.db("pathagar_db").collection("reviews");
     // const userCollection = client.db("pathagar_db").collection("users");
