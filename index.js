@@ -65,6 +65,7 @@ async function run() {
     const courseCollection = client.db("pathagar_db").collection("courses");
     //const bookCollection = client.db("pathagar_db").collection("books");
     const orderCollection = client.db("pathagar_db").collection("orders");
+    const reviewCollection = client.db("pathagar_db").collection("reviews");
     // const userCollection = client.db("pathagar_db").collection("users");
     const paymentCollection = client.db("pathagar_db").collection("payments");
 
@@ -220,6 +221,18 @@ async function run() {
     //   const isAdmin = user.role === 'admin';
     //   res.send({ admin: isAdmin })
     // })
+
+    // review route
+    app.get('/review', async (req, res) => {
+      const reviews = await reviewCollection.find().toArray();
+      res.send(reviews)
+    })
+
+    app.post('/review', async (req, res) => {
+      const review = req.body;
+      const reviews = await reviewCollection.insertOne(review);
+      res.send(reviews)
+    })
 
     // payment route
     app.post('/create-payment-intent', verifyJWT, async (req, res) => {
