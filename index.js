@@ -223,7 +223,7 @@ async function run() {
       res.send(result);
     });
 
-    app.put('/allusers/makeadmin/:email', verifyJWT, async (req, res) => {
+    app.put('/allusers/makeadmin/:email', verifyJWT, verifyAdmin, async (req, res) => {
       const email = req.params.email;
       const requester = req.decoded.email;
       const requesterAccount = await userCollection.findOne({ email: requester });
