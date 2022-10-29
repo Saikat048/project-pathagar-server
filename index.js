@@ -93,7 +93,13 @@ async function run() {
     app.get('/books', async (req, res) => {
       const books = await bookCollection.find().toArray();
       res.send(books);
-    })
+    });
+
+    app.post('/book', verifyJWT, async (req, res) => {
+      const query = req.body;
+      const result = await bookCollection.insertOne(query);
+      res.send(result);
+    });
 
 
     // ========== cart routes ==========
